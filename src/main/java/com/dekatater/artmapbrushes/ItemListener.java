@@ -133,6 +133,12 @@ public class ItemListener implements Listener {
                 itemName = ChatColor.stripColor(itemName);
                 mappingName = ChatColor.stripColor(mappingName);
             }
+            
+            // Remove special characters if configured to ignore them
+            if (mapping.shouldIgnoreSpecialChars()) {
+                itemName = itemName.replaceAll("[^a-zA-Z0-9\\s]", "");
+                mappingName = mappingName.replaceAll("[^a-zA-Z0-9\\s]", "");
+            }
 
             // Check if name matches (respecting case sensitivity setting)
             boolean nameMatches;
