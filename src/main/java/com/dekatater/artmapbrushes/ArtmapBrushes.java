@@ -14,6 +14,7 @@ public class ArtmapBrushes extends JavaPlugin {
     private Map<String, BrushMapping> brushMappings = new HashMap<>();
     private File configFile;
     private FileConfiguration config;
+    private boolean paused = false;
 
     @Override
     public void onEnable() {
@@ -23,31 +24,18 @@ public class ArtmapBrushes extends JavaPlugin {
         saveDefaultConfig();
         configFile = new File(getDataFolder(), "config.yml");
 
-        // Debug info
-        getLogger().info("Config file path: " + configFile.getAbsolutePath());
-        getLogger().info("Config file exists: " + configFile.exists());
-
         // Load the config
         loadConfig();
 
         // Register the item listener
         getServer().getPluginManager().registerEvents(new ItemListener(this), this);
-        getLogger().info("Registered ItemListener");
 
-        // Register reload command
+        // Register commands
         getCommand("artmapbrushesreload").setExecutor(new ReloadCommand(this));
-        getLogger().info("Registered reload command");
+        getCommand("artmapbrushespause").setExecutor(new PauseCommand(this));
+        getCommand("artmapbrushesresume").setExecutor(new ResumeCommand(this));
 
         getLogger().info("ArtmapBrushes has been enabled! Loaded " + brushMappings.size() + " brush mappings");
-
-        // Print all loaded brushes for debugging
-        for (Map.Entry<String, BrushMapping> entry : brushMappings.entrySet()) {
-            BrushMapping mapping = entry.getValue();
-            getLogger().info("Brush: " + entry.getKey() +
-                    " | Material: " + mapping.getMaterial() +
-                    " | Name: '" + mapping.getName() + "'" +
-                    " | CustomModelData: " + mapping.getCustomModelData());
-        }
     }
 
     @Override
@@ -56,42 +44,28 @@ public class ArtmapBrushes extends JavaPlugin {
     }
 
     public void loadConfig() {
-        getLogger().info("Loading configuration...");
-
         // Create default config if it doesn't exist
         if (!configFile.exists()) {
-            getLogger().info("Config file not found, creating default config...");
             saveResource("config.yml", false);
         }
 
         // Load config
         config = YamlConfiguration.loadConfiguration(configFile);
 
-        // Debug configuration content
-        getLogger().info("Raw config: " + config.saveToString());
-
         // Clear existing mappings
         brushMappings.clear();
 
         // Load mappings from config
         if (config.contains("brushes")) {
-            getLogger().info("Found 'brushes' section in config");
             Set<String> brushes = config.getConfigurationSection("brushes").getKeys(false);
 
-            getLogger().info("Found " + brushes.size() + " brush entries in config");
-
             for (String brushSection : brushes) {
-                getLogger().info("Processing brush: " + brushSection);
-
                 String itemType = config.getString("brushes." + brushSection + ".type");
                 String itemName = config.getString("brushes." + brushSection + ".name");
                 boolean caseSensitive = config.getBoolean("brushes." + brushSection + ".case_sensitive", false);
                 boolean ignoreColor = config.getBoolean("brushes." + brushSection + ".ignore_color", true);
+                boolean ignoreSpecialChars = config.getBoolean("brushes." + brushSection + ".ignore_special_chars", false);
                 String customModelData = config.getString("brushes." + brushSection + ".custom_model_data");
-
-                getLogger().info("Brush values - Type: " + itemType + ", Name: '" + itemName +
-                        "', Case Sensitive: " + caseSensitive + ", Ignore Color: " +
-                        ignoreColor + ", CustomModelData: " + customModelData);
 
                 Material material = Material.getMaterial(itemType);
                 if (material == null) {
@@ -104,22 +78,27 @@ public class ArtmapBrushes extends JavaPlugin {
                         itemName,
                         caseSensitive,
                         ignoreColor,
+                        ignoreSpecialChars,
                         customModelData
                 );
 
                 brushMappings.put(brushSection, mapping);
-                getLogger().info("Successfully added brush '" + brushSection + "' with material " +
-                        material + " and custom model data " + customModelData);
             }
         } else {
             getLogger().warning("No 'brushes' section found in config file!");
         }
-
-        getLogger().info("Loaded " + brushMappings.size() + " brush mappings");
     }
 
     public Map<String, BrushMapping> getBrushMappings() {
         return brushMappings;
+    }
+    
+    public boolean isPaused() {
+        return paused;
+    }
+    
+    public void setPaused(boolean paused) {
+        this.paused = paused;
     }
 
     // Inner class to store brush mapping information
@@ -128,13 +107,15 @@ public class ArtmapBrushes extends JavaPlugin {
         private final String name;
         private final boolean caseSensitive;
         private final boolean ignoreColor;
+        private final boolean ignoreSpecialChars;
         private final String customModelData;
 
-        public BrushMapping(Material material, String name, boolean caseSensitive, boolean ignoreColor, String customModelData) {
+        public BrushMapping(Material material, String name, boolean caseSensitive, boolean ignoreColor, boolean ignoreSpecialChars, String customModelData) {
             this.material = material;
             this.name = name;
             this.caseSensitive = caseSensitive;
             this.ignoreColor = ignoreColor;
+            this.ignoreSpecialChars = ignoreSpecialChars;
             this.customModelData = customModelData;
         }
 
@@ -152,6 +133,10 @@ public class ArtmapBrushes extends JavaPlugin {
 
         public boolean shouldIgnoreColor() {
             return ignoreColor;
+        }
+
+        public boolean shouldIgnoreSpecialChars() {
+            return ignoreSpecialChars;
         }
 
         public String getCustomModelData() {

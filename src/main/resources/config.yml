@@ -2,17 +2,17 @@
 # Format:
 # brushes:
 #   unique_id:
-## - Can be anything, used internally
+    ## - Can be anything, used internally
 #     type: MATERIAL_TYPE
-## - Minecraft's name for the dye item
+    ## - Minecraft's name for the dye item
 #     name: "Display Name"
-## - What the item has to be named in order to apply NBT data
+    ## - What the item has to be named in order to apply NBT data
 #     case_sensitive: true/false
-## - example: if true, "Red" will apply nbt data, "red" will not
+    ## - example: if true, "Red" will apply nbt data, "red" will not
 #     ignore_color: true/false
-## - In case you distribute items with colored names, this will ignore text formatting if true
+    ## - In case you distribute items with colored names, this will ignore text formatting if true
 #     custom_model_data: <String>
-## - This is the name of the brush's assets/models/item/custom/<name>.json in the resource pack and the data set within the item's assets/items/<item_name>.json
+    ## - This is the name of the brush's assets/models/item/custom/<name>.json in the resource pack and the data set within the item's assets/items/<item_name>.json 
 
 brushes:
   red_brush:
@@ -28,416 +28,453 @@ brushes:
     case_sensitive: false
     ignore_color: true
     custom_model_data: Blue
-
   raw_iron_brush:
     type: RAW_IRON
     name: "Fleshy Tan"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Fleshy_Tan
-
+    
   egg_brush:
     type: EGG
     name: "Egg White"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Egg_White
-
+    
   pink_dye_brush:
     type: PINK_DYE
     name: "Pink"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Pink
-
+    
   crimson_stem_brush:
     type: CRIMSON_STEM
     name: "Furious Grape"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Furious_Grape
-
+    
   beetroot_brush:
     type: BEETROOT
     name: "Beet Red"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Beet_Red
-
+    
   chorus_fruit_brush:
     type: CHORUS_FRUIT
     name: "Chorus Fruit Purple"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Chorus_Fruit_Purple
-
+    
   warped_hyphae_brush:
     type: WARPED_HYPHAE
     name: "Pomegranate"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Pomegranate
-
+    
   ice_brush:
     type: ICE
     name: "Ice Blue"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Ice_Blue
-
+    
   magenta_dye_brush:
     type: MAGENTA_DYE
     name: "Magenta"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Magenta
-
+    
   purple_dye_brush:
     type: PURPLE_DYE
     name: "Purple"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Purple
-
+    
   purpur_block_brush:
     type: PURPUR_BLOCK
     name: "Plum Purple"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Plum_Purple
-
+    
   mycelium_brush:
     type: MYCELIUM
     name: "Lavender"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Lavender
-
+    
   lapis_block_brush:
     type: LAPIS_BLOCK
     name: "Water Blue"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Water_Blue
-
+    
   lapis_ore_brush:
     type: LAPIS_ORE
     name: "Deep Blue"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Deep_Blue
-
+    
   light_blue_dye_brush:
     type: LIGHT_BLUE_DYE
     name: "Light Blue"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Light_Blue
-
+    
   cyan_dye_brush:
     type: CYAN_DYE
     name: "Cyan"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Cyan
-
+    
   prismarine_crystals_brush:
     type: PRISMARINE_CRYSTALS
     name: "Aqua"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Aqua
-
+    
   warped_stem_brush:
     type: WARPED_STEM
     name: "Turquoise"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Turquoise
-
+    
   warped_nylium_brush:
     type: WARPED_NYLIUM
     name: "Peacock Blue"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Peacock_Blue
-
+    
   warped_wart_block_brush:
     type: WARPED_WART_BLOCK
     name: "Seafoam Blue"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Seafoam_Blue
-
+    
   lime_dye_brush:
     type: LIME_DYE
     name: "Lime"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Lime
-
+    
   grass_brush:
     type: SHORT_GRASS
     name: "Grass Green"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Grass_Green
-
+    
   glow_lichen_brush:
     type: GLOW_LICHEN
     name: "Sage Gween"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Sage_Green
-
+    
   slime_ball_brush:
     type: SLIME_BALL
     name: "Slime Green"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Slime_Green
-
+    
   green_dye_brush:
     type: GREEN_DYE
     name: "Green"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Green
-
+    
   poisonous_potato_brush:
     type: POISONOUS_POTATO
     name: "Mold Green"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Mold_Green
-
+    
   emerald_brush:
     type: EMERALD
     name: "Emerald Green"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Emerald_Green
-
+    
   oak_leaves_brush:
     type: OAK_LEAVES
     name: "Leaf Green"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Leaf_Green
-
+    
   pumpkin_seed_brush:
     type: PUMPKIN_SEEDS
     name: "Cream"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Cream
-
+    
   gold_nugget_brush:
     type: GOLD_NUGGET
     name: "Gold"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Gold
-
+    
   yellow_dye_brush:
     type: YELLOW_DYE
     name: "Yellow"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Yellow
-
+    
   glowstone_dust_brush:
     type: GLOWSTONE_DUST
     name: "Glowstone Yellow"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Glowstone_Yellow
-
+    
   orange_dye_brush:
     type: ORANGE_DYE
     name: "Orange"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Orange
-
+    
   magma_cream_brush:
     type: MAGMA_CREAM
     name: "Burnt Orange"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Burnt_Orange
-
+    
   dark_oak_log_brush:
     type: DARK_OAK_LOG
     name: "Wood Brown"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Wood_Brown
-
+    
   melon_seed_brush:
     type: MELON_SEEDS
     name: "Coffee"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Coffee
-
+    
   birch_wood_brush:
     type: BIRCH_WOOD
     name: "Caramel Brown"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Caramel_Brown
-
+    
   cocoa_beans_brush:
     type: COCOA_BEANS
     name: "Brown"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Brown
-
+    
   podzol_brush:
     type: PODZOL
     name: "Podzol Brown"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Podzol_Brown
-
+    
   soul_sand_brush:
     type: SOUL_SAND
     name: "Dark Chocolate"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Dark_Chocolate
-
+    
   charcoal_brush:
     type: CHARCOAL
     name: "Almost Black"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Almost_Black
-
+    
   apple_brush:
     type: APPLE
     name: "Apple Red"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Apple_Red
-
+    
   spider_eye_brush:
     type: SPIDER_EYE
     name: "Brown Brick Red"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Brown_Brick_Red
-
+    
   crimson_nylium_brush:
     type: CRIMSON_NYLIUM
     name: "Racecar Red"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Racecar_Red
-
+    
   brick_brush:
     type: BRICK
     name: "Brick Red"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Brick_Red
-
+    
   crimson_hyphae_brush:
     type: CRIMSON_HYPHAE
     name: "Wine Red"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Wine_Red
-
+    
   nether_wart_brush:
     type: NETHER_WART
     name: "Maroon"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Maroon
-
+    
   snow_brush:
     type: SNOW
     name: "Snow White"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Snow_White
-
+    
   bone_meal_brush:
     type: BONE_MEAL
     name: "White"
     case_sensitive: false
     ignore_color: true
     custom_model_data: White
-
+    
   cobweb_brush:
     type: COBWEB
-    name: "Cobweb"
+    name: "Light Gray"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Light_Gray
-
+    
   light_gray_dye_brush:
     type: LIGHT_GRAY_DYE
     name: "Silver"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Silver
-
+    
   gray_dye_brush:
     type: GRAY_DYE
     name: "Gray"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Gray
-
+    
   gunpowder_brush:
     type: GUNPOWDER
-    name: "Gunpowder Grey"
+    name: "Gunpowder Gray"
     case_sensitive: false
     ignore_color: true
-    custom_model_data: Gunpowder_Grey
-
+    custom_model_data: Gunpowder_Gray
+    
   brown_mushroom_brush:
     type: BROWN_MUSHROOM
     name: "Mushroom Brown"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Mushroom_Brown
-
+    
   ghast_tear_brush:
     type: GHAST_TEAR
     name: "Ghast Gray"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Ghast_Gray
-
+    
   cobbled_deepslate_brush:
     type: COBBLED_DEEPSLATE
     name: "Deepslate Gray"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Deepslate_Gray
-
+    
   iron_nugget_brush:
     type: IRON_NUGGET
     name: "Iron Gray"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Iron_Gray
-
+    
   flint_brush:
     type: FLINT
     name: "Graphite"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Graphite
-
+    
   ink_sac_brush:
     type: INK_SAC
     name: "Black"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Black
+
+  easel:
+    type: ARMOR_STAND
+    name: "Easel"
+    case_sensitive: false
+    ignore_color: true
+    custom_model_data: Easel
+    
+  glow_easel:
+    type: ARMOR_STAND
+    name: "Glow Easel"
+    case_sensitive: false
+    ignore_color: true
+    custom_model_data: Glow_Easel
+
+  fill_tool:
+    type: BUCKET
+    name: "Fill"
+    case_sensitive: false
+    ignore_color: true
+    ignore_special_chars: true
+    custom_model_data: Fill_Tool
+
+  eyedropper:
+    type: SPONGE
+    name: "Eyedropper"
+    case_sensitive: false
+    ignore_color: true
+    ignore_special_chars: true
+    custom_model_data: Eyedropper
+
+  rotate_tool:
+    type: SPONGE
+    name: "Rotate"
+    case_sensitive: false
+    ignore_color: true
+    ignore_special_chars: true
+    custom_model_data: Rotate

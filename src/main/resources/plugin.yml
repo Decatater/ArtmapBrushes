@@ -1,5 +1,5 @@
 name: ArtmapBrushes
-version: 1.1.0
+version: 1.1.2 Release
 main: com.dekatater.artmapbrushes.ArtmapBrushes
 author: Dekatater
 api-version: 1.21
@@ -9,8 +9,19 @@ commands:
   artmapbrushesreload:
     description: Reloads the ArtmapBrushes configuration
     usage: /artmapbrushesreload
-    permission: artmapbrushes.reload
+    permission: artmapbrushes.op
+  artmapbrushespause:
+    description: Pauses NBT tag application
+    usage: /artmapbrushespause
+    permission: artmapbrushes.op
+  artmapbrushesresume:
+    description: Resumes NBT tag application
+    usage: /artmapbrushesresume
+    permission: artmapbrushes.op
 permissions:
+  artmapbrushes.op:
+    description: Allows usage of administrative commands (reload, pause, resume)
+    default: op
   artmapbrushes.reload:
     description: Allows reloading the ArtmapBrushes config
     default: op
