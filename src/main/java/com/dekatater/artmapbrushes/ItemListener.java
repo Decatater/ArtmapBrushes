@@ -27,18 +27,30 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ItemListener implements Listener {
     private final ArtmapBrushes plugin;
+    private final Map<String, AtomicLong> playerRateLimits = new ConcurrentHashMap<>();
+    private final Map<String, AtomicLong> playerInventoryProcessing = new ConcurrentHashMap<>();
+    private volatile boolean worldSaving = false;
+    private volatile long lastSaveDetection = 0;
 
     public ItemListener(ArtmapBrushes plugin) {
         this.plugin = plugin;
+        startSaveDetectionTask();
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getCurrentItem() != null) {
-            updateItemTexture(event.getCurrentItem());
+        if (event.getCurrentItem() != null && event.getWhoClicked() instanceof Player) {
+            Player player = (Player) event.getWhoClicked();
+            if (canProcessForPlayer(player.getUniqueId().toString(), plugin.getInventoryRateLimitMs())) {
+                updateItemTexture(event.getCurrentItem());
+            }
         }
     }
 
@@ -59,13 +71,49 @@ public class ItemListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
-        // Update all items in player inventory
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null) {
-                updateItemTexture(item);
+        
+        // Process inventory asynchronously with delays to prevent lag
+        new BukkitRunnable() {
+            private int index = 0;
+            private final ItemStack[] contents = player.getInventory().getContents();
+            
+            @Override
+            public void run() {
+                if (plugin.isPaused() || worldSaving) {
+                    cancel();
+                    return;
+                }
+                
+                int processed = 0;
+                while (index < contents.length && processed < plugin.getItemsPerTick()) {
+                    ItemStack item = contents[index];
+                    if (item != null) {
+                        updateItemTexture(item);
+                        processed++;
+                    }
+                    index++;
+                }
+                
+                if (index >= contents.length) {
+                    cancel();
+                    
+                    // Check for updates and notify if admin
+                    if (plugin.isUpdateCheckerEnabled() && plugin.shouldNotifyOnJoin() && 
+                        (player.hasPermission("artmapbrushes.admin") || player.isOp())) {
+                        plugin.getUpdateChecker().checkForUpdates().thenAccept(hasUpdate -> {
+                            if (hasUpdate) {
+                                new BukkitRunnable() {
+                                    @Override
+                                    public void run() {
+                                        plugin.getUpdateChecker().notifyUpdate(player);
+                                    }
+                                }.runTask(plugin);
+                            }
+                        });
+                    }
+                }
             }
-        }
+        }.runTaskTimer(plugin, plugin.getJoinProcessingDelayTicks(), plugin.getJoinProcessingIntervalTicks());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -73,7 +121,7 @@ public class ItemListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItem(event.getNewSlot());
 
-        if (item != null) {
+        if (item != null && canProcessForPlayer(player.getUniqueId().toString(), plugin.getRateLimitMs())) {
             updateItemTexture(item);
         }
     }
@@ -84,7 +132,8 @@ public class ItemListener implements Listener {
     }
 
     private void updateItemTexture(ItemStack item) {
-        if (item == null || !item.hasItemMeta()) {
+        // Skip processing if plugin is paused, world is saving, or item is invalid
+        if (plugin.isPaused() || worldSaving || item == null || !item.hasItemMeta()) {
             return;
         }
 
@@ -230,6 +279,73 @@ public class ItemListener implements Listener {
         } catch (Exception e) {
             plugin.getLogger().severe("Error removing custom model data: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private boolean canProcessForPlayer(String playerId, long rateLimitMs) {
+        AtomicLong lastProcessTime = playerRateLimits.computeIfAbsent(playerId, k -> new AtomicLong(0));
+        long currentTime = System.currentTimeMillis();
+        long lastTime = lastProcessTime.get();
+        
+        if (currentTime - lastTime >= rateLimitMs) {
+            lastProcessTime.set(currentTime);
+            return true;
+        }
+        return false;
+    }
+
+    private void startSaveDetectionTask() {
+        new BukkitRunnable() {
+            private int lastPlayerCount = 0;
+            private double lastTPS = 20.0;
+            
+            @Override
+            public void run() {
+                try {
+                    // Detect potential world saves by monitoring TPS drops and player count
+                    int currentPlayerCount = Bukkit.getOnlinePlayers().size();
+                    double currentTPS = getCurrentTPS();
+                    
+                    // Detect save conditions: significant TPS drop or server lag
+                    boolean potentialSave = false;
+                    if (currentTPS < 15.0 && lastTPS >= 18.0) {
+                        potentialSave = true;
+                    }
+                    
+                    // Also check for server thread blocking (common during saves)
+                    long startTime = System.nanoTime();
+                    Thread.yield();
+                    long endTime = System.nanoTime();
+                    if ((endTime - startTime) > 50_000_000) { // 50ms+ delay indicates blocking
+                        potentialSave = true;
+                    }
+                    
+                    if (potentialSave) {
+                        worldSaving = true;
+                        lastSaveDetection = System.currentTimeMillis();
+                        plugin.getLogger().info("World save detected - pausing NBT operations");
+                    } else if (worldSaving && (System.currentTimeMillis() - lastSaveDetection) > plugin.getSaveDetectionCooldownMs()) {
+                        worldSaving = false;
+                        plugin.getLogger().info("World save completed - resuming NBT operations");
+                    }
+                    
+                    lastPlayerCount = currentPlayerCount;
+                    lastTPS = currentTPS;
+                    
+                } catch (Exception e) {
+                    plugin.getLogger().warning("Error in save detection: " + e.getMessage());
+                }
+            }
+        }.runTaskTimer(plugin, 20L, 20L); // Run every second
+    }
+    
+    private double getCurrentTPS() {
+        try {
+            Object server = Bukkit.getServer().getClass().getMethod("getServer").invoke(Bukkit.getServer());
+            Object[] recentTps = (Object[]) server.getClass().getField("recentTps").get(server);
+            return (Double) recentTps[0];
+        } catch (Exception e) {
+            return 20.0; // Default to 20 TPS if detection fails
         }
     }
 }

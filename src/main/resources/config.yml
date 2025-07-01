@@ -12,7 +12,47 @@
 #     ignore_color: true/false
     ## - In case you distribute items with colored names, this will ignore text formatting if true
 #     custom_model_data: <String>
-    ## - This is the name of the brush's assets/models/item/custom/<name>.json in the resource pack and the data set within the item's assets/items/<item_name>.json 
+    ## - This is the name of the brush's assets/models/item/custom/<name>.json in the resource pack and the data set within the item's assets/items/<item_name>.json
+
+# Update Checker Settings
+update_checker:
+  # Enable automatic update checking
+  enabled: true
+  
+  # GitHub repository for update checking (format: username/repository)
+  github_repo: "Decatater/ArtmapBrushes"
+  
+  # Notify admins when they join if an update is available
+  notify_on_join: true
+  
+  # Check for updates on plugin startup
+  check_on_startup: true
+
+# Performance Settings
+performance:
+  # Rate limit for high-frequency events (item held, inventory clicks) in milliseconds
+  # Higher values reduce server load but may make updates less responsive
+  rate_limit_ms: 50
+  
+  # Rate limit for inventory processing events in milliseconds
+  # Higher values reduce server load during inventory operations
+  inventory_rate_limit_ms: 100
+  
+  # Save detection cooldown in milliseconds
+  # How long to wait after detecting a save before resuming operations
+  save_detection_cooldown_ms: 5000
+  
+  # Items to process per tick during player join inventory processing
+  # Lower values reduce lag spikes but take longer to process inventories
+  items_per_tick: 5
+  
+  # Delay in ticks before starting inventory processing on player join
+  # Higher values prevent lag during player join but delay texture updates
+  join_processing_delay_ticks: 20
+  
+  # Interval in ticks between processing batches during player join
+  # Higher values reduce load but slow down processing
+  join_processing_interval_ticks: 2 
 
 brushes:
   red_brush:
@@ -184,7 +224,7 @@ brushes:
     
   glow_lichen_brush:
     type: GLOW_LICHEN
-    name: "Sage Gween"
+    name: "Sage Green"
     case_sensitive: false
     ignore_color: true
     custom_model_data: Sage_Green

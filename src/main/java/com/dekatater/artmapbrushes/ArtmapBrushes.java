@@ -15,6 +15,21 @@ public class ArtmapBrushes extends JavaPlugin {
     private File configFile;
     private FileConfiguration config;
     private boolean paused = false;
+    
+    // Performance settings
+    private long rateLimitMs = 50;
+    private long inventoryRateLimitMs = 100;
+    private long saveDetectionCooldownMs = 5000;
+    private int itemsPerTick = 5;
+    private long joinProcessingDelayTicks = 20;
+    private long joinProcessingIntervalTicks = 2;
+    
+    // Update checker
+    private UpdateChecker updateChecker;
+    private boolean updateCheckerEnabled = true;
+    private String githubRepo = "dekatater/ArtmapBrushes";
+    private boolean notifyOnJoin = true;
+    private boolean checkOnStartup = true;
 
     @Override
     public void onEnable() {
@@ -29,11 +44,21 @@ public class ArtmapBrushes extends JavaPlugin {
 
         // Register the item listener
         getServer().getPluginManager().registerEvents(new ItemListener(this), this);
+        
+        // Initialize update checker if enabled
+        if (updateCheckerEnabled) {
+            updateChecker = new UpdateChecker(this, githubRepo);
+            if (checkOnStartup) {
+                getLogger().info("Checking for updates...");
+                updateChecker.checkAndNotifyAsync();
+            }
+        }
 
         // Register commands
         getCommand("artmapbrushesreload").setExecutor(new ReloadCommand(this));
         getCommand("artmapbrushespause").setExecutor(new PauseCommand(this));
         getCommand("artmapbrushesresume").setExecutor(new ResumeCommand(this));
+        getCommand("artmapbrushesupdate").setExecutor(new UpdateCommand(this));
 
         getLogger().info("ArtmapBrushes has been enabled! Loaded " + brushMappings.size() + " brush mappings");
     }
@@ -54,6 +79,12 @@ public class ArtmapBrushes extends JavaPlugin {
 
         // Clear existing mappings
         brushMappings.clear();
+        
+        // Load performance settings
+        loadPerformanceSettings();
+        
+        // Load update checker settings
+        loadUpdateCheckerSettings();
 
         // Load mappings from config
         if (config.contains("brushes")) {
@@ -100,6 +131,39 @@ public class ArtmapBrushes extends JavaPlugin {
     public void setPaused(boolean paused) {
         this.paused = paused;
     }
+    
+    private void loadPerformanceSettings() {
+        rateLimitMs = config.getLong("performance.rate_limit_ms", 50);
+        inventoryRateLimitMs = config.getLong("performance.inventory_rate_limit_ms", 100);
+        saveDetectionCooldownMs = config.getLong("performance.save_detection_cooldown_ms", 5000);
+        itemsPerTick = config.getInt("performance.items_per_tick", 5);
+        joinProcessingDelayTicks = config.getLong("performance.join_processing_delay_ticks", 20);
+        joinProcessingIntervalTicks = config.getLong("performance.join_processing_interval_ticks", 2);
+        
+        getLogger().info("Performance settings loaded: rate_limit=" + rateLimitMs + "ms, inventory_rate_limit=" + inventoryRateLimitMs + "ms");
+    }
+    
+    private void loadUpdateCheckerSettings() {
+        updateCheckerEnabled = config.getBoolean("update_checker.enabled", true);
+        githubRepo = config.getString("update_checker.github_repo", "dekatater/ArtmapBrushes");
+        notifyOnJoin = config.getBoolean("update_checker.notify_on_join", true);
+        checkOnStartup = config.getBoolean("update_checker.check_on_startup", true);
+        
+        getLogger().info("Update checker settings loaded: enabled=" + updateCheckerEnabled + ", repo=" + githubRepo);
+    }
+    
+    // Getters for performance settings
+    public long getRateLimitMs() { return rateLimitMs; }
+    public long getInventoryRateLimitMs() { return inventoryRateLimitMs; }
+    public long getSaveDetectionCooldownMs() { return saveDetectionCooldownMs; }
+    public int getItemsPerTick() { return itemsPerTick; }
+    public long getJoinProcessingDelayTicks() { return joinProcessingDelayTicks; }
+    public long getJoinProcessingIntervalTicks() { return joinProcessingIntervalTicks; }
+    
+    // Update checker getters
+    public UpdateChecker getUpdateChecker() { return updateChecker; }
+    public boolean isUpdateCheckerEnabled() { return updateCheckerEnabled; }
+    public boolean shouldNotifyOnJoin() { return notifyOnJoin; }
 
     // Inner class to store brush mapping information
     public static class BrushMapping {
